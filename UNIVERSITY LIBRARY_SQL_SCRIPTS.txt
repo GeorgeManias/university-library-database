@@ -1,0 +1,208 @@
+GEORGIOS MANIAS
+© 2025 Georgios Manias. All rights reserved.
+-----------------------------------------
+
+
+CREATE DATABASE UniversityLibrary;
+USE UniversityLibrary;
+
+CREATE TABLE Student (
+    student_id INT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    birth_date DATE NOT NULL,
+    department VARCHAR(100) NOT NULL CHECK (department IN ('Mathematics', 'Statistics, Actuarial and Financial Mathematics', 'Information and Communication Systems Engineering')),
+    academic_email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE Librarian (
+    id_card_number VARCHAR(20) PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Category (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL,
+    description VARCHAR(255)
+);
+
+CREATE TABLE Book (
+    isbn VARCHAR(20) PRIMARY KEY,
+    category_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    publisher VARCHAR(100) NOT NULL,
+    publication_year INT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES Category(category_id)
+);
+
+CREATE TABLE Shelf (
+    shelf_id INT PRIMARY KEY,
+    library_name VARCHAR(100) NOT NULL,
+    corridor VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Copy (
+    copy_id INT PRIMARY KEY,
+    isbn VARCHAR(20) NOT NULL,
+    shelf_id INT,
+    copy_status VARCHAR(20) NOT NULL CHECK (copy_status IN ('Available', 'Damaged', 'Lost')),
+    FOREIGN KEY (isbn) REFERENCES Book(isbn),
+    FOREIGN KEY (shelf_id) REFERENCES Shelf(shelf_id)
+);
+
+CREATE TABLE Loan (
+    loan_id INT PRIMARY KEY,
+    copy_id INT NOT NULL,
+    student_id INT NOT NULL,
+    id_card_number VARCHAR(20) NOT NULL,
+    loan_date DATE NOT NULL,
+    return_date DATE,
+    loan_status VARCHAR(20) NOT NULL CHECK (loan_status IN ('Borrowed', 'Returned')),
+    FOREIGN KEY (copy_id) REFERENCES Copy(copy_id),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id),
+    FOREIGN KEY (id_card_number) REFERENCES Librarian(id_card_number)
+);
+
+INSERT INTO Student (student_id, full_name, birth_date, department, academic_email) VALUES
+(985202401, 'Giannis Papadopoulos', '2002-04-15', 'Mathematics', 'giannis.papadopoulos@uni.gr'),
+(985202402, 'Maria Ioannidou', '2001-11-03', 'Statistics, Actuarial and Financial Mathematics', 'maria.ioannidou@uni.gr'),
+(985202403, 'Nikos Dimitriou', '2003-06-25', 'Information and Communication Systems Engineering', 'nikos.dimitriou@uni.gr'),
+(985202404, 'Eleni Panayotopoulou', '2002-02-17', 'Mathematics', 'eleni.panagiotopoulou@uni.gr'),
+(985202405, 'Anastasia Kalogirou', '2001-08-29', 'Statistics, Actuarial and Financial Mathematics', 'anastasia.kalogirou@uni.gr'),
+(985202406, 'Panagiotis Konstantinou', '2003-01-11', 'Information and Communication Systems Engineering', 'panagiotis.konstantinou@uni.gr'),
+(985202407, 'Dimitra Alexiou', '2002-12-20', 'Mathematics', 'dimitra.alexiou@uni.gr'),
+(985202408, 'Stavros Antoniou', '2001-07-05', 'Statistics, Actuarial and Financial Mathematics', 'stavros.antoniou@uni.gr'),
+(985202409, 'Ioanna Stamatopoulou', '2002-10-14', 'Information and Communication Systems Engineering', 'ioanna.stamatopoulou@uni.gr'),
+(985202410, 'Christos Georgiou', '2003-03-08', 'Mathematics', 'christos.georgiou@uni.gr');
+
+INSERT INTO Librarian (id_card_number, full_name) VALUES
+('AZ123456', 'Sotiria Papadaki'),
+('VH654321', 'Dimitris Kefalas'),
+('GR789123', 'Anastasia Manta'),
+('DS456987', 'Ioannis Karagiannis'),
+('EL321789', 'Nikoleta Fotanou');
+
+INSERT INTO Category (category_id, category_name, description) VALUES
+(1, 'Mathematics', 'Books covering theory, algebra, geometry, and analysis.'),
+(2, 'Statistics and Actuarial', 'Topics in statistics and actuarial mathematics.'),
+(3, 'Computer Science and Telecommunications', 'Theory and practice of computer science and networks.'),
+(4, 'Natural Sciences', 'Books on physics, chemistry, and biology.'),
+(5, 'Economics', 'Topics of economic theory and practice.'),
+(6, 'History', 'Historical books from antiquity to the present.'),
+(7, 'Literature', 'Prose, poetry, and theatrical works.'),
+(8, 'Law', 'Legal studies and regulatory texts.'),
+(9, 'Psychology', 'Theories and practices of the human psyche and behavior.'),
+(10, 'Technology', 'Innovations and scientific developments in modern technology.');
+
+INSERT INTO Book (isbn, category_id, title, author, publisher, publication_year) VALUES
+('978-960-01-0001-0', 1, 'Analysis I', 'Giannis Konstantinou', 'University Press', 2018),
+('978-960-01-0002-7', 1, 'Linear Algebra', 'Maria Antoniou', 'Mathematics Press', 2020),
+('978-960-01-0003-4', 1, 'Probability theory', 'Stavros Alexiou', 'Scientific Editions', 2019),
+('978-960-01-0004-1', 2, 'Applied Statistics', 'Eleni Dimitriou', 'Statistics Publications', 2021),
+('978-960-01-0005-8', 2, 'Actuarial Mathematics I', 'Panagiotis Nikolaou', 'Insurance Editions', 2017),
+('978-960-01-0006-5', 2, 'Statistical Models', 'Niki Stamatopoulou', 'Information Editions', 2020),
+('978-960-01-0007-2', 3, 'Databases', 'Dimitris Vasileiou', 'Computer Science Press', 2019),
+('978-960-01-0008-9', 3, 'Computer Networks', 'Katerina Sotiriou', 'Network Editions', 2018),
+('978-960-01-0009-6', 3, 'Object-Oriented Programming', 'Christos Oikonomou', 'Software Editions', 2022),
+('978-960-01-0010-2', 4, 'Quantum Physics', 'Anna Michailidou', 'Scientific Editions', 2021),
+('978-960-01-0011-9', 4, 'Organic chemistry', 'Thanasis Petrou', 'Natural Sciences Press', 2016),
+('978-960-01-0012-6', 4, 'Molecular Biology', 'Eirini Papakonstantinou', 'Biosciences Editions', 2020),
+('978-960-01-0013-3', 5, 'Microeconomic Analysis', 'Vasilis Spyropoulos', 'Economy Press', 2019),
+('978-960-01-0014-0', 5, 'Macroeconomics', 'Sofia Argyriou', 'Economic Science Editions', 2022),
+('978-960-01-0015-7', 5, 'International trade', 'Giannis Manolakis', 'Economic Policy Editions', 2018),
+('978-960-01-0016-4', 6, 'History of Ancient Greece', 'Anastasia Theodorou', 'History Press', 2017),
+('978-960-01-0017-1', 6, 'Byzantine History', 'Nikos Chatzigiannis', 'Byzantine Studies Press', 2019),
+('978-960-01-0018-8', 6, 'Modern European History', 'Despoina Georgiou', 'European History Editions', 2021),
+('978-960-01-0019-5', 7, 'Greek Literature', 'Michalis Anagnostopoulos', 'Literary Editions', 2018),
+('978-960-01-0020-1', 7, 'Poetry of the 20th Century', 'Alexandra Pappa', 'Poetry Editions', 2017);
+
+INSERT INTO Shelf (shelf_id, library_name, corridor) VALUES
+(1, 'Library 1', 'Line 1'),
+(2, 'Library 1', 'Line 2'),
+(3, 'Library 1', 'Line 3'),
+(4, 'Library 1', 'Line 4'),
+(5, 'Library 1', 'Line 5'),
+(6, 'Library 1', 'Line 6'),
+(7, 'Library 1', 'Line 7'),
+(8, 'Library 1', 'Line 8'),
+(9, 'Library 1', 'Line 9'),
+(10, 'Library 1', 'Line 10'),
+(11, 'Library 2', 'Line 1'),
+(12, 'Library 2', 'Line 2'),
+(13, 'Library 2', 'Line 3'),
+(14, 'Library 2', 'Line 4'),
+(15, 'Library 2', 'Line 5'),
+(16, 'Library 2', 'Line 6'),
+(17, 'Library 2', 'Line 7'),
+(18, 'Library 2', 'Line 8'),
+(19, 'Library 2', 'Line 9'),
+(20, 'Library 2', 'Line 10'),
+(21, 'Library 3', 'Line 1'),
+(22, 'Library 3', 'Line 2'),
+(23, 'Library 3', 'Line 3'),
+(24, 'Library 3', 'Line 4'),
+(25, 'Library 3', 'Line 5'),
+(26, 'Library 3', 'Line 6'),
+(27, 'Library 3', 'Line 7'),
+(28, 'Library 3', 'Line 8'),
+(29, 'Library 3', 'Line 9'),
+(30, 'Library 3', 'Line 10'),
+(31, 'Library 4', 'Line 1'),
+(32, 'Library 4', 'Line 2'),
+(33, 'Library 4', 'Line 3'),
+(34, 'Library 4', 'Line 4'),
+(35, 'Library 4', 'Line 5'),
+(36, 'Library 4', 'Line 6'),
+(37, 'Library 4', 'Line 7'),
+(38, 'Library 4', 'Line 8'),
+(39, 'Library 4', 'Line 9'),
+(40, 'Library 4', 'Line 10');
+
+INSERT INTO Copy (copy_id, isbn, shelf_id, copy_status) VALUES
+(1, '978-960-01-0001-0', 1, 'Available'),
+(2, '978-960-01-0001-0', 2, 'Available'),
+(3, '978-960-01-0002-7', 3, 'Available'),
+(4, '978-960-01-0002-7', 3, 'Damaged'),
+(5, '978-960-01-0003-4', 4, 'Available'),
+(6, '978-960-01-0004-1', NULL, 'Lost'),
+(7, '978-960-01-0005-8', 6, 'Available'),
+(8, '978-960-01-0006-5', 7, 'Available'),
+(9, '978-960-01-0006-5', 7, 'Available'),
+(10, '978-960-01-0007-2', 8, 'Damaged'),
+(11, '978-960-01-0007-2', 8, 'Available'),
+(12, '978-960-01-0008-9', 9, 'Available'),
+(13, '978-960-01-0009-6', NULL, 'Lost'),
+(14, '978-960-01-0009-6', 10, 'Available'),
+(15, '978-960-01-0010-2', 11, 'Available'),
+(16, '978-960-01-0011-9', 12, 'Damaged'),
+(17, '978-960-01-0011-9', 12, 'Available'),
+(18, '978-960-01-0012-6', 13, 'Available'),
+(19, '978-960-01-0013-3', 14, 'Available'),
+(20, '978-960-01-0014-0', 15, 'Available'),
+(21, '978-960-01-0015-7', 16, 'Available'),
+(22, '978-960-01-0015-7', NULL, 'Lost'),
+(23, '978-960-01-0016-4', 17, 'Available'),
+(24, '978-960-01-0017-1', 18, 'Damaged'),
+(25, '978-960-01-0017-1', 18, 'Available'),
+(26, '978-960-01-0018-8', 19, 'Available'),
+(27, '978-960-01-0019-5', 20, 'Available'),
+(28, '978-960-01-0020-1', NULL, 'Lost'),
+(29, '978-960-01-0020-1', 22, 'Available'),
+(30, '978-960-01-0019-5', 20, 'Damaged');
+
+INSERT INTO Loan (loan_id, copy_id, student_id, id_card_number, loan_date, return_date, loan_status) VALUES
+(1, 1, 985202402, 'AZ123456', '2025-02-10', NULL, 'Borrowed'),
+(2, 5, 985202404, 'VH654321', '2025-01-25', NULL, 'Borrowed'),
+(3, 7, 985202401, 'GR789123', '2025-01-01', '2025-04-10', 'Returned'),
+(4, 11, 985202405, 'DS456987', '2024-12-20', '2025-04-01', 'Returned'),
+(5, 9, 985202406, 'EL321789', '2025-03-20', '2025-04-10', 'Returned'),
+(6, 14, 985202403, 'AZ123456', '2025-04-01', '2025-04-15', 'Returned'),
+(7, 12, 985202407, 'VH654321', '2025-03-28', NULL, 'Borrowed'),
+(8, 16, 985202408, 'GR789123', '2025-03-15', '2025-04-05', 'Returned'),
+(9, 18, 985202409, 'DS456987', '2025-04-05', NULL, 'Borrowed'),
+(10, 19, 985202410, 'EL321789', '2025-03-30', '2025-04-20', 'Returned'),
+(11, 20, 985202402, 'AZ123456', '2025-04-02', '2025-04-18', 'Returned'),
+(12, 23, 985202405, 'VH654321', '2025-03-25', '2025-04-08', 'Returned'),
+(13, 26, 985202403, 'GR789123', '2025-04-10', NULL, 'Borrowed'),
+(14, 27, 985202407, 'DS456987', '2025-04-07', '2025-04-21', 'Returned'),
+(15, 29, 985202408, 'EL321789', '2025-04-05', NULL, 'Borrowed');
